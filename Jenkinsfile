@@ -8,8 +8,7 @@ pipeline {
    
 	options {
         timestamps()
-		timeout(time: 1, unit: 'HOURS') 
-		
+		timeout(time: 1, unit: 'HOURS') 	
     }
     
     stages {   
@@ -27,20 +26,19 @@ pipeline {
             steps {
 				   withSonarQubeEnv('Test_Sonar') {
                    bat "dotnet ${scannerHome}\\SonarScanner.MSBuild.dll begin /k:sonar-${userName} /n:sonar-${userName} /v:1.0"
-                  }
+                }
             }
         }
 
         stage('Code build') {
-            steps {
-				  
+            steps {		  
 				  echo "Cleaning and building the code.."
                   bat "dotnet clean"		  
                   bat "dotnet build --configuration Release"     
             }
         }
 		
-		 stage('Test case Execution') {
+		stage('Test case Execution') {
              when {
                 branch "master"
             }
@@ -72,10 +70,11 @@ pipeline {
             }
         }
 
-        // stage('Kubernetes Deployment') {
-		 // steps{
-		     // bat "kubectl apply -f deployment.yaml"
-		 // }
-		//}
-   	 }
+        stage('Kubernetes Deployment') {
+		  steps{
+             echo "Initiating Kubernetes deployment"
+		     bat "kubectl apply -f deployment.yaml"
+		    }
+		}
+   	}
 }
