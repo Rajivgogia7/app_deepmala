@@ -56,7 +56,7 @@ pipeline {
 			steps {
 				   echo "Stopping sonarqube analysis"
                    withSonarQubeEnv('Test_Sonar') {
-                   sh "dotnet ${scannerHome}\\SonarScanner.MSBuild.dll end"
+                   sh "dotnet ${scannerHome}/SonarScanner.MSBuild.dll end"
                    }
             }
         }
