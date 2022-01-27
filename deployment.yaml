@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: Namespace
 metadata:
-  name: kubernetes-cluster-deepmalamittal1
+  name: kubernetes-cluster-deepmalamittal
 --- 
 
 apiVersion: apps/v1
