@@ -15,7 +15,7 @@ pipeline {
     	stage ("Nuget restore") {
             steps {	    
                 echo "Restoring nuget packages"
-                sh "dotnet restore"
+                bat "dotnet restore"
             }
         }
 		
@@ -25,7 +25,7 @@ pipeline {
             }
             steps {
 				   withSonarQubeEnv('Test_Sonar') {
-                   sh "dotnet ${scannerHome}/SonarScanner.MSBuild.dll begin /k:sonar-${userName} /n:sonar-${userName} /v:1.0"
+                   bat "dotnet ${scannerHome}/SonarScanner.MSBuild.dll begin /k:sonar-${userName} /n:sonar-${userName} /v:1.0"
                 }
             }
         }
@@ -33,8 +33,8 @@ pipeline {
         stage('Code build') {
             steps {		  
 				  echo "Cleaning and building the code.."
-                  sh "dotnet clean"		  
-                  sh "dotnet build --configuration Release"     
+                  bat "dotnet clean"		  
+                  bat "dotnet build --configuration Release"     
             }
         }
 		
@@ -45,7 +45,7 @@ pipeline {
 			
 			steps {			  
 				  echo "Execute test cases."
-                  sh "dotnet test /p:CollectCoverage=true /p:CoverletOutputFormat=opencover -l:trx;LogFileName=TestFileReport.xml"      
+                  bat "dotnet test /p:CollectCoverage=true /p:CoverletOutputFormat=opencover -l:trx;LogFileName=TestFileReport.xml"      
             }
         }
 		stage('Stop sonarqube analysis'){
@@ -56,7 +56,7 @@ pipeline {
 			steps {
 				   echo "Stopping sonarqube analysis"
                    withSonarQubeEnv('Test_Sonar') {
-                   sh "dotnet ${scannerHome}/SonarScanner.MSBuild.dll end"
+                   bat "dotnet ${scannerHome}/SonarScanner.MSBuild.dll end"
                    }
             }
         }
@@ -66,14 +66,14 @@ pipeline {
             }
             steps {
                 echo "Releasing the artifact"
-                sh "dotnet publish --configuration Release"
+                bat "dotnet publish --configuration Release"
             }
         }
 
         stage('Kubernetes Deployment') {
 		  steps{
              echo "Initiating Kubernetes deployment"
-		     sh "kubectl apply -f deployment.yaml"
+		     bat "kubectl apply -f deployment.yaml"
 		    }
 		}
    	}
